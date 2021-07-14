@@ -1,0 +1,14 @@
+{
+  "name": "swarm-airdrop-nodes",
+  "version": "0.0.1",
+  "description": "",
+  "main": "index.js",
+  "keywords": [],
+  "author": "Philippe Schommers <philippe@schommers.be>",
+  "license": "MIT",
+  "dependencies": {
+    "config": "^3.3.6",
+    "ethers": "^5.4.1",
+    "node-worker-threads-pool": "^1.5.0"
+  }
+}
