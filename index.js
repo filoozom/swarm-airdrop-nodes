@@ -46,4 +46,21 @@ program
   )
   .action(require("./commands/balances"));
 
+program
+  .command("airdrop")
+  .description("Calculate BZZ received by a node based on a balance CSV")
+  .option(
+    "-i, --input <input>",
+    "input csv file",
+    parseDirectory,
+    parseDirectory(path.join(__dirname, "data/balances.csv"))
+  )
+  .option(
+    "-o, --output <output>",
+    "output csv file",
+    parseDirectory,
+    parseDirectory(path.join(__dirname, "data/airdrop.csv"))
+  )
+  .action(require("./commands/airdrop"));
+
 program.parse();
