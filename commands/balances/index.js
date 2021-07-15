@@ -46,8 +46,8 @@ module.exports = (_, command) => {
       pool.destroy();
 
       fs.writeFileSync(output, "address;balance");
-      for (const data of nodes) {
-        fs.appendFileSync(output, "\n" + data.join(";"));
+      for (const data of [...nodes].sort()) {
+        fs.appendFileSync(output, "\n" + data.join(";") + "\n");
       }
       console.log(`Data saved to ${output}`);
     }

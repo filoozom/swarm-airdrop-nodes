@@ -41,7 +41,8 @@ module.exports = (_, command) => {
     if (done === jobs) {
       pool.destroy();
 
-      fs.writeFileSync(output, ["address", ...nodes].join("\n"));
+      const sortedNodes = [...nodes].sort();
+      fs.writeFileSync(output, ["address", ...sortedNodes].join("\n") + "\n");
       console.log(`Data saved to ${output}`);
     }
   };
