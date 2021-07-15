@@ -28,11 +28,11 @@ module.exports = (_, command) => {
 
   console.log(`Read ${input}, sum of balances: ${sum}`);
 
-  fs.writeFileSync(output, "address;plur");
+  fs.writeFileSync(output, "address;plur\n");
   for ([beneficiary, balance] of nodes) {
     fs.appendFileSync(
       output,
-      `\n${beneficiary};${balance.mul(airdrop).div(sum)}`
+      `${beneficiary};${balance.mul(airdrop).div(sum)}\n`
     );
   }
   console.log(`Data saved to ${output}`);

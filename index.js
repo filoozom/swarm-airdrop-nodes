@@ -19,7 +19,7 @@ program
     "-i, --input <input>",
     "input csv file",
     parseDirectory,
-    parseDirectory(path.join(__dirname, "data/queens.csv"))
+    parseDirectory(path.join(__dirname, "data/initial-trusted.csv"))
   )
   .option(
     "-o, --output <output>",
