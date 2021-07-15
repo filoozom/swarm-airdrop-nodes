@@ -25,15 +25,7 @@ parentPort.on("message", async (input) => {
       return [];
     }
 
-    const { totalPayout, callerPayout, caller, beneficiary } = event.args;
-
-    if (callerPayout) {
-      return [
-        { beneficiary: caller, payout: callerPayout },
-        { beneficiary, payout: totalPayout.sub(callerPayout) },
-      ];
-    }
-
+    const { totalPayout, beneficiary } = event.args;
     return { beneficiary: beneficiary, payout: totalPayout };
   });
 
