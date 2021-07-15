@@ -8,11 +8,12 @@ const { readAddresses } = require("../../lib/csv");
 
 module.exports = (_, command) => {
   const { input, output } = command.opts();
-  const nodes = new Set();
+  const workerData = readAddresses(input);
+  const nodes = new Set(workerData);
   const pool = new StaticPool({
     size: config.get("workers.count"),
     task: path.resolve(__dirname, "./worker.js"),
-    workerData: readAddresses(input),
+    workerData,
   });
 
   let jobs = 0;
