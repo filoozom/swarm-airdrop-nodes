@@ -1,22 +1,13 @@
 const config = require("config");
-const fs = require("fs");
-const path = require("path");
 const { getDefaultProvider, utils } = require("ethers");
-const { parentPort } = require("worker_threads");
+const { parentPort, workerData } = require("worker_threads");
 
 // ABI
-const ssAbi = require("../abis/ss.json");
+const ssAbi = require("../../abis/ss.json");
 
 // Setup provider and interface
 const provider = getDefaultProvider(config.get("ethereum.endpoint"));
 const interface = new utils.Interface(ssAbi);
-
-// Trusted nodes
-const trustedNodesRaw = fs.readFileSync(
-  path.join(__dirname, "data/trusted.csv"),
-  "utf8"
-);
-const trustedNodes = new Set(trustedNodesRaw.split(/\r\n/).slice(1));
 
 parentPort.on("message", async (input) => {
   const { from, to } = input;
@@ -28,11 +19,10 @@ parentPort.on("message", async (input) => {
     toBlock: to,
   });
 
-  const recipients = events.flatMap((event) =>
-    trustedNodes.has(event.address)
-      ? interface.parseLog(event).args.recipient
-      : []
-  );
+  const recipients = events.flatMap((raw) => {
+    const event = interface.parseLog(raw);
+    return workerData.has(raw.address) ? event.args.recipient : [];
+  });
 
   parentPort.postMessage({ ...input, recipients: new Set(recipients) });
 });
