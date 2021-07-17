@@ -5,11 +5,17 @@ module.exports = {
 
   fetch: {
     interval: 100,
+    first: 4283397,
+    latest: 5130433,
+  },
+
+  trusted: {
+    interval: 100,
     first: 4230000,
     latest: 5130433,
   },
 
   workers: {
-    count: 4,
+    count: 8,
   },
 };

@@ -52,7 +52,7 @@ module.exports = (_, command) => {
     }
   };
 
-  const { interval, first, latest } = config.get("fetch");
+  const { interval, first, latest } = config.get("trusted");
 
   for (let from = first; from < latest; from += interval) {
     const to = from + interval - 1;
