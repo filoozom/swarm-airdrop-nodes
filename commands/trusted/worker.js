@@ -27,9 +27,9 @@ parentPort.on("message", async (input) => {
   };
 
   const recipients = events.flatMap((raw) => {
-    const event = interface.parseLog(raw);
-    const valid = trusted.has(raw.address) && isValidChequebook(raw.address);
-    return valid ? event.args.recipient : [];
+    const { args } = interface.parseLog(raw);
+    const valid = trusted.has(raw.address) && isValidChequebook(args.recipient);
+    return valid ? args.recipient : [];
   });
 
   parentPort.postMessage({ ...input, recipients: new Set(recipients) });

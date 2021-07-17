@@ -28,12 +28,13 @@ parentPort.on("message", async (input) => {
       return [];
     }
 
-    if (chequebooks && !chequebooks.has(raw.address)) {
+    const { totalPayout, beneficiary, recipient } = event.args;
+
+    if (chequebooks && !chequebooks.has(recipient)) {
       return [];
     }
 
-    const { totalPayout, beneficiary } = event.args;
-    return { beneficiary: beneficiary, payout: totalPayout };
+    return { beneficiary, payout: totalPayout };
   });
 
   parentPort.postMessage({ ...input, balances });
