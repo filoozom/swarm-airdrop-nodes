@@ -8,8 +8,7 @@ const { BigNumber } = require("ethers");
 const { readAddresses } = require("../../lib/csv");
 
 module.exports = (_, command) => {
-  const { input, output, chequebooks, noChequebookValidation } = command.opts();
-  const validateChequebooks = !noChequebookValidation;
+  const { input, output, chequebooks, chequebookValidation } = command.opts();
 
   const nodes = new Map();
   const pool = new StaticPool({
@@ -17,7 +16,7 @@ module.exports = (_, command) => {
     task: path.resolve(__dirname, "./worker.js"),
     workerData: {
       trusted: readAddresses(input),
-      chequebooks: validateChequebooks && readAddresses(chequebooks),
+      chequebooks: chequebookValidation && readAddresses(chequebooks),
     },
   });
 

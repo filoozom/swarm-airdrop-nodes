@@ -7,8 +7,7 @@ const { StaticPool } = require("node-worker-threads-pool");
 const { readAddresses } = require("../../lib/csv");
 
 module.exports = (_, command) => {
-  const { input, output, chequebooks, noChequebookValidation } = command.opts();
-  const validateChequebooks = !noChequebookValidation;
+  const { input, output, chequebooks, chequebookValidation } = command.opts();
 
   const trusted = readAddresses(input);
   const nodes = new Set(trusted);
@@ -17,7 +16,7 @@ module.exports = (_, command) => {
     task: path.resolve(__dirname, "./worker.js"),
     workerData: {
       trusted,
-      chequebooks: validateChequebooks && readAddresses(chequebooks),
+      chequebooks: chequebookValidation && readAddresses(chequebooks),
     },
   });
 
