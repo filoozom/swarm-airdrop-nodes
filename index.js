@@ -13,6 +13,17 @@ function parseDirectory(dir) {
 program.version(version).helpOption("--help");
 
 program
+  .command("chequebooks")
+  .description("Fetch all officially deployed chequebooks")
+  .option(
+    "-o, --output <output>",
+    "output csv file",
+    parseDirectory,
+    parseDirectory(path.join(__dirname, "data/chequebooks.csv"))
+  )
+  .action(require("./commands/chequebooks"));
+
+program
   .command("trusted")
   .description("Fetch nodes that got cheques from trusted nodes")
   .option(
@@ -22,11 +33,18 @@ program
     parseDirectory(path.join(__dirname, "data/initial-trusted.csv"))
   )
   .option(
+    "-c, --chequebooks <input>",
+    "input chequebook csv file",
+    parseDirectory,
+    parseDirectory(path.join(__dirname, "data/chequebooks.csv"))
+  )
+  .option(
     "-o, --output <output>",
     "output csv file",
     parseDirectory,
     parseDirectory(path.join(__dirname, "data/trusted.csv"))
   )
+  .option("--no-chequebook-validation", "disable chequebook validation", false)
   .action(require("./commands/trusted"));
 
 program
@@ -39,11 +57,18 @@ program
     parseDirectory(path.join(__dirname, "data/trusted.csv"))
   )
   .option(
+    "-c, --chequebooks <input>",
+    "input chequebook csv file",
+    parseDirectory,
+    parseDirectory(path.join(__dirname, "data/chequebooks.csv"))
+  )
+  .option(
     "-o, --output <output>",
     "output csv file",
     parseDirectory,
     parseDirectory(path.join(__dirname, "data/balances.csv"))
   )
+  .option("--no-chequebook-validation", "disable chequebook validation", false)
   .action(require("./commands/balances"));
 
 program

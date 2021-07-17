@@ -3,22 +3,12 @@ const fs = require("fs");
 const path = require("path");
 const { StaticPool } = require("node-worker-threads-pool");
 
-// Lib
-const { readAddresses } = require("../../lib/csv");
-
 module.exports = (_, command) => {
-  const { input, output, chequebooks, noChequebookValidation } = command.opts();
-  const validateChequebooks = !noChequebookValidation;
-
-  const trusted = readAddresses(input);
-  const nodes = new Set(trusted);
+  const { output } = command.opts();
+  const nodes = [];
   const pool = new StaticPool({
     size: config.get("workers.count"),
     task: path.resolve(__dirname, "./worker.js"),
-    workerData: {
-      trusted,
-      chequebooks: validateChequebooks && readAddresses(chequebooks),
-    },
   });
 
   let jobs = 0;
@@ -34,20 +24,22 @@ module.exports = (_, command) => {
       return;
     }
 
-    const { from, to, recipients } = result;
-    [...recipients].forEach((recipient) => nodes.add(recipient));
+    const { from, to, chequebooks } = result;
+    nodes.push(...chequebooks);
     done++;
 
     const progress = (Math.round((done / jobs) * 10000) / 100).toFixed(2);
     console.log(
-      `Fetched from ${from} to ${to} (${progress}%), found ${recipients.size} new recipients (${nodes.size} total)`
+      `Fetched from ${from} to ${to} (${progress}%), found ${chequebooks.length} new chequebooks (${nodes.length} total)`
     );
 
     if (done === jobs) {
       pool.destroy();
 
-      const sortedNodes = [...nodes].sort();
-      fs.writeFileSync(output, ["address", ...sortedNodes].join("\n") + "\n");
+      fs.writeFileSync(
+        output,
+        ["address", ...nodes.map((node) => node.address)].join("\n") + "\n"
+      );
       console.log(`Data saved to ${output}`);
     }
   };

@@ -10,6 +10,9 @@ This is an alternative implementation to verify that the data from the [official
 # Show the options to run these scripts
 node index.js --help
 
+# Fetch the list of chequebooks deployed by the official factory and write it to data/chequebook.csv
+node index.js chequebooks
+
 # Fetch the list of trusted nodes based on data/initial-trusted.csv and write it to data/trusted.csv
 node index.js trusted
 

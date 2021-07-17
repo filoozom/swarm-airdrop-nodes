@@ -9,6 +9,9 @@ const ssAbi = require("../../abis/ss.json");
 const provider = getDefaultProvider(config.get("ethereum.endpoint"));
 const interface = new utils.Interface(ssAbi);
 
+// Worker data
+const { trusted, chequebooks } = workerData;
+
 parentPort.on("message", async (input) => {
   const { from, to } = input;
   const events = await provider.getLogs({
@@ -19,9 +22,14 @@ parentPort.on("message", async (input) => {
     toBlock: to,
   });
 
+  const isValidChequebook = (address) => {
+    return !chequebooks || chequebooks.has(address);
+  };
+
   const recipients = events.flatMap((raw) => {
     const event = interface.parseLog(raw);
-    return workerData.has(raw.address) ? event.args.recipient : [];
+    const valid = trusted.has(raw.address) && isValidChequebook(raw.address);
+    return valid ? event.args.recipient : [];
   });
 
   parentPort.postMessage({ ...input, recipients: new Set(recipients) });
