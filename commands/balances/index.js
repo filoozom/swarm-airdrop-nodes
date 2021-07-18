@@ -50,11 +50,8 @@ module.exports = (_, command) => {
       pool.destroy();
 
       fs.writeFileSync(output, "address;balance\n");
-      for (const [beneficiary, payout] of [...nodes].sort()) {
-        fs.appendFileSync(
-          output,
-          `${beneficiary};${payout.add(BigNumber.from(10).pow(15))}\n`
-        );
+      for (const data of [...nodes].sort()) {
+        fs.appendFileSync(output, data.join(";") + "\n");
       }
       console.log(`Data saved to ${output}`);
     }

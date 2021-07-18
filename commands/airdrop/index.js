@@ -32,7 +32,10 @@ module.exports = (_, command) => {
   for ([beneficiary, balance] of nodes) {
     fs.appendFileSync(
       output,
-      `${beneficiary};${balance.mul(airdrop).div(sum)}\n`
+      `${beneficiary};${balance
+        .mul(airdrop)
+        .div(sum)
+        .add(BigNumber.from(10).pow(15))}\n`
     );
   }
   console.log(`Data saved to ${output}`);
