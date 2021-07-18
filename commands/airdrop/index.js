@@ -3,7 +3,10 @@ const { BigNumber } = require("ethers");
 
 const readCsv = (input) => {
   const data = fs.readFileSync(input, "utf8");
-  const addresses = data.split(/\n/).map((string) => string.trim().split(";"));
+  const addresses = data
+    .trim()
+    .split(/\n/)
+    .map((string) => string.trim().split(";"));
 
   // Remove the CSV header
   if (!addresses[0][0].startsWith("0x")) {
