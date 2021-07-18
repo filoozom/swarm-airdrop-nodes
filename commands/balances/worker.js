@@ -24,17 +24,16 @@ parentPort.on("message", async (input) => {
 
   const balances = events.flatMap((raw) => {
     const event = interface.parseLog(raw);
-    if (!trusted.has(raw.address)) {
-      return [];
-    }
-
     const { totalPayout, beneficiary, recipient } = event.args;
 
     if (chequebooks && !chequebooks.has(recipient)) {
       return [];
     }
 
-    return { beneficiary, payout: totalPayout };
+    return {
+      beneficiary,
+      payout: trusted.has(raw.address) ? totalPayout : 0,
+    };
   });
 
   parentPort.postMessage({ ...input, balances });
