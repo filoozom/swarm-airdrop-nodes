@@ -30,6 +30,10 @@ parentPort.on("message", async (input) => {
       return [];
     }
 
+    if (totalPayout.isZero()) {
+      return [];
+    }
+
     return {
       beneficiary,
       payout: trusted.has(raw.address) ? totalPayout : 0,
