@@ -1,5 +1,8 @@
 const fs = require("fs");
 const { BigNumber } = require("ethers");
+const BN = require('bignumber.js');
+
+BN.config({ DECIMAL_PLACES: 25 })
 
 const readCsv = (input) => {
   const data = fs.readFileSync(input, "utf8");
@@ -35,11 +38,45 @@ module.exports = (_, command) => {
   for ([beneficiary, balance] of nodes) {
     fs.appendFileSync(
       output,
-      `${beneficiary};${balance
-        .mul(airdrop)
-        .div(sum)
-        .add(BigNumber.from(10).pow(15))}\n`
+      `${beneficiary};${BN(balance.toString())
+        .times(airdrop.toString())
+        .div(sum.toString())
+        .plus(BigNumber.from(10).pow(15).toString())
+        .toFixed(0)}\n`
     );
   }
   console.log(`Data saved to ${output}`);
+
+  const clean = 'data.csv'
+  fs.writeFileSync(clean, "address;plur\n");
+  for ([beneficiary, balance] of nodes) {
+    if (balance.isZero()) {
+      continue
+    }
+
+    fs.appendFileSync(
+      clean,
+      `${beneficiary};${BN(balance.toString())
+        .times(airdrop.toString())
+        .div(sum.toString())
+        .toFixed(0)}\n`
+    );
+  }
+  console.log(`Data saved to ${clean}`);
+
+  const airdropOutput = 'airdrop.json'
+  const balances = []
+  for ([beneficiary, balance] of nodes) {
+    balances.push({
+      id: beneficiary,
+      balance: balance.isZero()
+        ? "0" 
+        : BN(balance.toString())
+            .times(airdrop.toString())
+            .div(sum.toString())
+            .toFixed(0)
+    });
+  }
+  fs.writeFileSync(airdropOutput, JSON.stringify({ balances }))
+  console.log(`Data saved to ${airdropOutput}`);
 };
