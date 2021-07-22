@@ -51,7 +51,7 @@ module.exports = (_, command) => {
     }
   };
 
-  const { interval, first, latest } = config.get("trusted");
+  const { interval, first, latest } = config.get("fetch");
 
   for (let from = first; from < latest; from += interval) {
     const to = from + interval - 1;
